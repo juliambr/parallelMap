@@ -224,9 +224,9 @@ parallelMap = function(fun, ..., more.args = list(), simplify = FALSE,
           res$result = NA
           ids.complete = batchtools::findDone(reg = reg)
           ids.incomplete = batchtools::findNotDone(reg = reg)
-
           res[res$job.id %in% ids.complete$job.id, ]$result = batchtools::reduceResultsList(ids.complete, reg = reg)
-          res[res$job.id %in% ids.incomplete$job.id, ]$result = lapply(batchtools::getErrorMessages(ids.incomplete, reg = reg)$message, simpleError)
+          if (nrow(ids.incomplete) > 0)
+            res[res$job.id %in% ids.incomplete$job.id, ]$result = lapply(batchtools::getErrorMessages(ids.incomplete, reg = reg)$message, simpleError)
         }
       }
     }
