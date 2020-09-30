@@ -221,12 +221,12 @@ parallelMap = function(fun, ..., more.args = list(), simplify = FALSE,
             extra.msg)
         } else { # if we reached this line and error occurred, we have impute.error != NULL (NULL --> stop before)
           res = batchtools::findJobs(reg = reg)
-          res$result = NA
+          res$result = list()
           ids.complete = batchtools::findDone(reg = reg)
           ids.incomplete = batchtools::findNotDone(reg = reg)
-          res[res$job.id %in% ids.complete$job.id, ]$result = batchtools::reduceResultsList(ids.complete, reg = reg)
+          res[res$job.id %in% ids.complete$job.id, ][["result"]] = batchtools::reduceResultsList(ids.complete, reg = reg)
           if (nrow(ids.incomplete) > 0)
-            res[res$job.id %in% ids.incomplete$job.id, ]$result = lapply(batchtools::getErrorMessages(ids.incomplete, reg = reg)$message, simpleError)
+            res[res$job.id %in% ids.incomplete$job.id, ][["result"]] = lapply(batchtools::getErrorMessages(ids.incomplete, reg = reg)$message, simpleError)
         }
       }
     }
